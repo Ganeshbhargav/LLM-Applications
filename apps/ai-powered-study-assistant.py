@@ -2,6 +2,7 @@ import os
 from google import genai
 from dotenv import load_dotenv
 from google.genai import types
+import gradio as gr
 
 # Load environment variables
 load_dotenv()
@@ -42,9 +43,12 @@ def study_assistant(question,persona):
   # Return only generated text output
   return response.text
 
-# Example usage
-personality = "Academic"
-output = study_assistant("Explain GenAi",personality)
-
-# Print model response
-print(output)
+demo = gr.Interface(
+    fn = study_assistant,
+    inputs = [gr.Textbox(lines=4,placeholder="Ask a Question...",label = "Question"),
+             gr.Radio(choices = list(personalities.keys()),value ="Friendly",label = "Personality")],
+    outputs = gr.Textbox(lines= 10, label= "Response"),
+    title = "Study Assistant",
+    description= "Ask a question to get simple explanation from AI along analogies and real world examples"
+)
+demo.launch(debug=True)
